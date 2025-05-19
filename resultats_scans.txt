@@ -1,7 +1,1 @@
------
-Date du scan : 2025-05-19 13:25:22
-Adresse IP : 192.168.1.80
-Plage de ports : 8080
 
-État de l'hôte : up
-Port 8080/tcp : closed
