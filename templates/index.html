@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scanner de Ports</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            background-color: #e3f2fd;
+            padding: 1rem 2rem;
+            color: #0d47a1;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 2rem auto;
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+        }
+
+        h1 {
+            margin-bottom: 1.5rem;
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"] {
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            padding: 0.65rem 1rem;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: #d9534f;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        th,
+        td {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            font-family: "Consolas", monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    {% if results %}
+    <nav>
+        🔍 Scan terminé : {{ results | length }} ports analysés —
+        {{ results | selectattr('state', 'equalto', 'ouvert') | list | length }} port(s) ouvert(s)
+    </nav>
+    {% endif %}
+
+    <div class="container">
+        <h1>Scanner de Ports</h1>
+
+        <form method="post" novalidate>
+            <label for="ip">Adresse IP</label>
+            <input type="text" id="ip" name="ip" placeholder="ex: 192.168.1.1" required autofocus />
+
+            <label for="ports">Plage de ports</label>
+            <input type="text" id="ports" name="ports" placeholder="ex: 1-1024 ou 80,443" required />
+
+            <button type="submit">Scanner</button>
+        </form>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Port</th>
+                    <th>Protocole</th>
+                    <th>État</th>
+                    <th>Bannière</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    <td>{{ r.port }}</td>
+                    <td>{{ r.proto }}</td>
+                    <td>{{ r.state }}</td>
+                    <td>
+                        <pre>{{ r.banner }}</pre>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+
+</html>
